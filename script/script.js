@@ -1,10 +1,12 @@
+var GAME_GRID = document.getElementById("tableId"); // Grille de jeu.
+var isGameOver = false; //Détermine si le jeu est fini.
+
 /**
  * Attends le chargement du DOM.
  */
 document.addEventListener("DOMContentLoaded", function(event) {
 
-	GAME_GRID = document.getElementById("tableId"); // Grille de jeu.
-	isGameOver = false; //Détermine si le jeu est fini.
+
 
 	// Clic sur le bouton "redémarrer une partie !".
 	document.getElementById("RAZ").onclick = function () { reset(); };
@@ -20,13 +22,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				GAME_GRID.rows[i].cells[j].onclick = function () { play(this); };
 		}
 	}
-
 });
 
 /**
-* Permet aux joueurs l'action de jouer.
-* Param cel : La cellule sur laquelle le joueur à cliqué.
-**/
+ * Permet aux joueurs l'action de jouer.
+ * Param cel : La cellule sur laquelle le joueur à cliqué.
+ **/
 function play(cel) {
 
 	// Est-ce que le jeu est terminé ?
@@ -35,7 +36,7 @@ function play(cel) {
 
 	// Récupère le joueur courrant.
 	var currentPlayer = document.getElementById("CurrentPlayer");
-	
+
 	// Récupère la classe de l'élément td.
 	var col = cel.getAttribute("class");
 
@@ -75,7 +76,7 @@ function play(cel) {
 				alert("Le joueur " + winner + " a gagné !");
 			}
 
-			return;	
+			return;
 		}
 	}
 
@@ -139,7 +140,7 @@ function checkWin(){
 						return player;
 					}
 				}
-			}				
+			}
 		}
 	}
 	return null;
