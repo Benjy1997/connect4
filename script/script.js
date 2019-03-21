@@ -51,7 +51,7 @@ function play(cel) {
 
 		// Ajoute une pièce à la grille de jeu si il n'y en à pas déjà une.
 		if(cel.getAttribute("class") == null){
-			cel.setAttribute("class", "fa fa-firefox fa-2x");
+			cel.setAttribute("class", "fas fa-circle");
 
 			// Détermine à quel joueur appartien la pièce.
 			if (currentPlayer.dataset.color === "rouge"){

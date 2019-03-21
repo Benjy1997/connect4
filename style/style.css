@@ -15,10 +15,6 @@ td {
 	height: 67px;
 }
 
-#tableId tr > td > button {
-	background-color: white;
-	border: none;
-	width: 2em;
-	height: 2em;
-	
+i {
+	font-size: 4em;
 }
