@@ -1,5 +1,7 @@
 var GAME_GRID = document.getElementById("tableId"); // Grille de jeu.
 var isGameOver = false; //Détermine si le jeu est fini.
+var test = new AI(2);
+var AIPlay = false;
 
 /**
  * Attends le chargement du DOM.
@@ -29,13 +31,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
  * Param cel : La cellule sur laquelle le joueur à cliqué.
  **/
 function play(cel) {
-
 	// Est-ce que le jeu est terminé ?
 	if (isGameOver)
 		return;
-
-	// Récupère le joueur courrant.
-	var currentPlayer = document.getElementById("CurrentPlayer");
 
 	// Récupère la classe de l'élément td.
 	var col = cel.getAttribute("class");
@@ -46,6 +44,15 @@ function play(cel) {
 	// 3) Corrige le numéro pour qu'il corresponde à un index qui commence de 0.
 	col = parseInt(col.substr(3,(col.length-2)))-1;
 
+	display(col);
+	col = test.play(2);
+	display(col);
+}
+
+function display(col) {
+	let cel;
+	// Récupère le joueur courrant.
+	var currentPlayer = document.getElementById("CurrentPlayer");
 	// Parcoure toutes les lignes de la colonne cliqué.
 	for (let i = GAME_GRID.rows.length-1; i >= 0;  i--) {
 		cel = GAME_GRID.rows[i].cells[col].firstElementChild;
@@ -69,7 +76,7 @@ function play(cel) {
 			}
 
 			// Détermine s'il y a un gagnant.
-			var winner = checkWin();
+			let winner = checkWin();
 			if (winner !== null){
 				isGameOver = true;
 				winner = winner.charAt(0).toUpperCase() + winner.slice(1);
@@ -122,7 +129,7 @@ function checkWin(){
 						return player;
 					}
 
-					// Détecte si un joueur a une diagonale ascendante.
+					// Détecte si un joueur a une diagonale descendante.
 					if (c + 3 < maxCol &&
 						player === GAME_GRID.rows[r+1].cells[c+1].firstElementChild.dataset.color &&
 						player === GAME_GRID.rows[r+2].cells[c+2].firstElementChild.dataset.color &&
@@ -131,7 +138,7 @@ function checkWin(){
 						return player;
 					}
 
-					// Détecte si un joueur a une diagonale descendante.
+					// Détecte si un joueur a une diagonale ascendante.
 					if ( c - 3 >= 0 &&
 						player === GAME_GRID.rows[r+1].cells[c-1].firstElementChild.dataset.color &&
 						player === GAME_GRID.rows[r+2].cells[c-2].firstElementChild.dataset.color &&
