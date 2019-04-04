@@ -19,21 +19,17 @@ class AI {
         bestScore = this.singleMoveScore(copyGameBoard, copyMoves[0], player, player, this.depth); // Calcul le score du premier coup.
         colPlayed = moves[0][1]; // Retourne la colonne ([1]) du premier coup ([0]).
         copyMoves = $.extend(true,[],moves);
-        console.log(JSON.stringify(moves[0]) + " " +bestScore);
         // Parcours les coup possibles
         // i = 1 car le score du premier coup a déjà été effectué.
         for (let i = 1; i < moves.length; i++){
             copyGameBoard = $.extend(true,[],gameBoard);
             copyMoves = $.extend(true,[],moves);
             score = this.singleMoveScore(copyGameBoard, copyMoves[i], player, player, this.depth);
-            console.log(JSON.stringify(moves[i]) + " " +score);
             // Si le score du coup actuel est plus grand que le meilleur score.
             if (score > bestScore){
                 colPlayed = moves[i][1];
                 bestScore = score;
             }
-            console.log("coup choisi : " + colPlayed)
-            console.log(bestScore);
         }
 
         return colPlayed;
@@ -363,17 +359,9 @@ class AI {
 
     test(){
         let gameBoard = this.boardToArray();
-
-        console.log(JSON.stringify(gameBoard));
         let copyTab = $.extend(true,[],gameBoard);
         this.test2(copyTab);
-        console.log(JSON.stringify(copyTab));
         copyTab = $.extend(true,[],gameBoard);
-
-
-        console.log(JSON.stringify(copyTab));
-
-
     }
 
     test2(tab){

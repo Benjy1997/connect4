@@ -45,10 +45,21 @@ function play(cel) {
 	col = parseInt(col.substr(3,(col.length-2)))-1;
 
 	display(col);
-
+	// Détermine s'il y a un gagnant.
+	let winner = checkWin();
+	if (winner !== null){
+		isGameOver = true;
+		winner = winner.charAt(0).toUpperCase() + winner.slice(1);
+		alert("Le joueur " + winner + " a gagné !");
+	}
 	col = computer.play(2);
 	display(col);
-	console.log('-----------------------------------------------------------------------------------------------------');
+	winner = checkWin();
+	if (winner !== null){
+		isGameOver = true;
+		winner = winner.charAt(0).toUpperCase() + winner.slice(1);
+		alert("Le joueur " + winner + " a gagné !");
+	}
 }
 
 function display(col) {
@@ -77,13 +88,7 @@ function display(col) {
 				currentPlayer.innerHTML = "Rouge doit jouer !";
 			}
 
-			// Détermine s'il y a un gagnant.
-			let winner = checkWin();
-			if (winner !== null){
-				isGameOver = true;
-				winner = winner.charAt(0).toUpperCase() + winner.slice(1);
-				alert("Le joueur " + winner + " a gagné !");
-			}
+
 
 			return;
 		}
