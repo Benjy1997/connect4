@@ -1,6 +1,6 @@
 // Initializing a class definition
 class AI {
-    endGame = false;
+    //endGame = false;
 
     constructor(depth) {
         this.depth = depth;
@@ -9,25 +9,31 @@ class AI {
     play(player){
         let colPlayed;
         let gameBoard = this.boardToArray();
+        let copyGameBoard = $.extend(true,[],gameBoard);
         let moves = this.getMoves(gameBoard);
+        let copyMoves = $.extend(true,[],moves);
         let bestScore;
         let score;
 
         // initialise le meilleur score.
-        bestScore = this.singleMoveScore(gameBoard, moves[0], player, player, this.depth); // Calcul le score du premier coup.
+        bestScore = this.singleMoveScore(copyGameBoard, copyMoves[0], player, player, this.depth); // Calcul le score du premier coup.
         colPlayed = moves[0][1]; // Retourne la colonne ([1]) du premier coup ([0]).
-
+        copyMoves = $.extend(true,[],moves);
+        console.log(JSON.stringify(moves[0]) + " " +bestScore);
         // Parcours les coup possibles
         // i = 1 car le score du premier coup a déjà été effectué.
         for (let i = 1; i < moves.length; i++){
-
-            score = this.singleMoveScore(gameBoard, moves[i], player, player, this.depth);
-
+            copyGameBoard = $.extend(true,[],gameBoard);
+            copyMoves = $.extend(true,[],moves);
+            score = this.singleMoveScore(copyGameBoard, copyMoves[i], player, player, this.depth);
+            console.log(JSON.stringify(moves[i]) + " " +score);
             // Si le score du coup actuel est plus grand que le meilleur score.
             if (score > bestScore){
                 colPlayed = moves[i][1];
                 bestScore = score;
             }
+            console.log("coup choisi : " + colPlayed)
+            console.log(bestScore);
         }
 
         return colPlayed;
@@ -47,7 +53,7 @@ class AI {
         // Parcours toutes les colonnes de la grille de jeu.
         for (let i = 0; i < gameBoard[0].length; i++){
             // Si la colonne n'est pas remplie
-            if (gameBoard[0][i] == 0){
+            if (gameBoard[0][i] === 0){
                 let col = i;
                 let row = this.getLastPlayableRow(gameBoard, col);
                 let move = [row,col];
@@ -67,7 +73,7 @@ class AI {
 
         // Parcours les lignes de la colonne en commençant par la dernière.
         for (let i = gameBoard.length-1; i >= 0; i--){
-            if (gameBoard[i][col] == 0)
+            if (gameBoard[i][col] === 0)
                 return i;
         }
     }
@@ -117,7 +123,7 @@ class AI {
      * @returns {number}
      */
     changePlayer(currentPlayer){
-        if (currentPlayer == 1)
+        if (currentPlayer === 1)
             currentPlayer = 2;
         else
             currentPlayer = 1;
@@ -138,13 +144,14 @@ class AI {
 
         // Joue un coup
         gameBoard[move[0]][move[1]] = currentPlayer; // Joue un coup. [0] = id ligne [1] = id colonne.
+        let copyGameBoard = $.extend(true,[],gameBoard);
 
         // Si le plateau de jeu est plein ou que c'est un coup gagnant ou qu'aucun nouveau coup ne dois être simulé
         if (this.isBoardFull(gameBoard) || this.winner(gameBoard, move) || depth === 0){
-            return this.evalMove(gameBoard, refPlayer);
+            return this.evalMove(copyGameBoard, refPlayer);
         } else {
 
-            return this.minMax(gameBoard, refPlayer, this.changePlayer(currentPlayer), depth-1);
+            return this.minMax(copyGameBoard, refPlayer, this.changePlayer(currentPlayer), depth-1);
         }
     }
 
@@ -157,13 +164,17 @@ class AI {
      * @returns {int} Un score
      */
     minMax(gameBoard, refPlayer, currentPlayer, depth){
-
+        let copyGameBoard = $.extend(true,[],gameBoard);
         let moves = this.getMoves(gameBoard);
-        let result = this.singleMoveScore(gameBoard,moves[0],refPlayer,currentPlayer,depth);
+        let copyMoves = $.extend(true,[],moves);
+        let result = this.singleMoveScore(copyGameBoard,copyMoves[0],refPlayer,currentPlayer,depth);
+        copyMoves = $.extend(true,[],moves);
         let score = 0;
         for (let i = 1; i < moves.length; i++){
-            score = this.singleMoveScore(gameBoard, moves[i],refPlayer,currentPlayer,depth);
-            if (currentPlayer == refPlayer){
+            copyMoves = $.extend(true,[],moves);
+            copyGameBoard = $.extend(true,[],gameBoard);
+            score = this.singleMoveScore(copyGameBoard, copyMoves[i],refPlayer,currentPlayer,depth);
+            if (currentPlayer === refPlayer){
                 result = this.max(result,score);
             } else {
                 result = this.min(result,score);
@@ -179,7 +190,7 @@ class AI {
      * @returns {int}
      */
     min(result, score){
-        if(result < score)
+        if(score < result)
             return score;
         else
             return result;
@@ -205,7 +216,7 @@ class AI {
      */
     isBoardFull(gameBoard){
         for (let i = 0; i < gameBoard[0].length; i++){
-            if (gameBoard[0][i] == 0)
+            if (gameBoard[0][i] === 0)
                 return false;
         }
 
@@ -214,7 +225,9 @@ class AI {
 
 
     evalMove(gameBoard, refPlayer){
-        return this.calculScore(gameBoard, refPlayer) - this.calculScore(gameBoard,this.changePlayer(refPlayer));
+        let score1 = this.calculScore(gameBoard, refPlayer);
+        let score2 = this.calculScore(gameBoard,this.changePlayer(refPlayer));
+        return  score1-score2;
     }
 
     calculScore(gameBoard, refPlayer){
@@ -225,7 +238,7 @@ class AI {
         for (let i = 0; i < gameBoard.length; i++){
             //Parcours les colonnes.
             for(let j = 0; j < gameBoard[0].length; j++){
-                if (gameBoard[i][j] == refPlayer){
+                if (gameBoard[i][j] === refPlayer){
                     result += this.scoreAlignment(this.nbTokensVerticallyAligned(gameBoard,i,j,refPlayer));
                     result += this.scoreAlignment(this.nbTokenshorizontallyAligned(gameBoard,i,j,refPlayer));
                     result += this.scoreAlignment(this.nbTokensDiagonallyASC(gameBoard,i,j,refPlayer));
@@ -239,70 +252,94 @@ class AI {
     nbTokensVerticallyAligned(gameBoard, row, col, refPlayer){
         let counter = 1;
         if(row+1 < gameBoard.length){
-            if (gameBoard[row+1][col] == refPlayer)
+            if (gameBoard[row+1][col] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
 
         if(row+2 < gameBoard.length){
 
-            if (gameBoard[row+2][col] == refPlayer)
+            if (gameBoard[row+2][col] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         if(row+3 < gameBoard.length){
-            if (gameBoard[row+3][col] == refPlayer)
+            if (gameBoard[row+3][col] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         return counter;
     }
     nbTokenshorizontallyAligned(gameBoard, row, col, refPlayer){
         let counter = 1;
         if(col+1 < gameBoard[0].length){
-            if (gameBoard[row][col+1] == refPlayer)
+            if (gameBoard[row][col+1] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
 
         if(col+2 < gameBoard[0].length){
-            if (gameBoard[row][col+2] == refPlayer)
+            if (gameBoard[row][col+2] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         if(col+3 < gameBoard[0].length){
-            if (gameBoard[row][col+3] == refPlayer)
+            if (gameBoard[row][col+3] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         return counter;
     }
     nbTokensDiagonallyASC(gameBoard, row, col, refPlayer){
         let counter = 1;
         if(row+1 < gameBoard.length && col-1 >= 0){
-            if(gameBoard[row+1][col-1] == refPlayer)
+            if(gameBoard[row+1][col-1] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
 
         if(row+2 < gameBoard.length && col-2 >= 0){
-            if(gameBoard[row+2][col-2] == refPlayer)
+            if(gameBoard[row+2][col-2] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         if(row+3 < gameBoard.length && col-3 >= 0){
-            if(gameBoard[row+3][col-3] == refPlayer)
+            if(gameBoard[row+3][col-3] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         return counter;
     }
     nbTokensDiagonallyDESC(gameBoard, row, col, refPlayer){
         let counter = 1;
         if(row+1 < gameBoard.length && col+1 < gameBoard[0].length){
-            if (gameBoard[row+1][col+1] == refPlayer)
+            if (gameBoard[row+1][col+1] === refPlayer)
             counter++;
+            else
+                return counter;
         }
 
         if(row+2 < gameBoard.length && col+2 < gameBoard[0].length){
-            if(gameBoard[row+2][col+2] == refPlayer)
+            if(gameBoard[row+2][col+2] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
 
         if(row+3 < gameBoard.length && col+3 < gameBoard[0].length){
-            if(gameBoard[row+3][col+3] == refPlayer)
+            if(gameBoard[row+3][col+3] === refPlayer)
                 counter++;
+            else
+                return counter;
         }
         return counter;
     }
@@ -322,5 +359,24 @@ class AI {
 
     winner(gameBoard, move){
         return false;
+    }
+
+    test(){
+        let gameBoard = this.boardToArray();
+
+        console.log(JSON.stringify(gameBoard));
+        let copyTab = $.extend(true,[],gameBoard);
+        this.test2(copyTab);
+        console.log(JSON.stringify(copyTab));
+        copyTab = $.extend(true,[],gameBoard);
+
+
+        console.log(JSON.stringify(copyTab));
+
+
+    }
+
+    test2(tab){
+        tab[5][1] = 2;
     }
 }

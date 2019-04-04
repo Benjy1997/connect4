@@ -1,6 +1,6 @@
 var GAME_GRID = document.getElementById("tableId"); // Grille de jeu.
 var isGameOver = false; //Détermine si le jeu est fini.
-var test = new AI(2);
+var computer = new AI(3);
 var AIPlay = false;
 
 /**
@@ -45,8 +45,10 @@ function play(cel) {
 	col = parseInt(col.substr(3,(col.length-2)))-1;
 
 	display(col);
-	col = test.play(2);
+
+	col = computer.play(2);
 	display(col);
+	console.log('-----------------------------------------------------------------------------------------------------');
 }
 
 function display(col) {
