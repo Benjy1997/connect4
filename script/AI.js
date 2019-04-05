@@ -1,6 +1,5 @@
 // Initializing a class definition
 class AI {
-    //endGame = false;
 
     constructor(depth) {
         this.depth = depth;
@@ -143,7 +142,7 @@ class AI {
         let copyGameBoard = $.extend(true,[],gameBoard);
 
         // Si le plateau de jeu est plein ou que c'est un coup gagnant ou qu'aucun nouveau coup ne dois être simulé
-        if (this.isBoardFull(gameBoard) || this.winner(gameBoard, move) || depth === 0){
+        if (this.isBoardFull(gameBoard) || this.winner(gameBoard, move, currentPlayer) || depth === 0){
             return this.evalMove(copyGameBoard, refPlayer);
         } else {
 
@@ -353,7 +352,109 @@ class AI {
         }
     }
 
-    winner(gameBoard, move){
+    winner(gameBoard, move, player){
+        //return false;
+        let row = move[0];
+        let col = move[1];
+        let counter = 1;
+
+
+        // Check ligne.
+        for (let i = 1; i <= 3; i++ ){
+
+            if (row-i >= 0){
+                if(gameBoard[row-i][col] == player)
+                    counter++;
+                else
+                    i = 4
+            }
+
+        }
+        for (let i = 1; i <= 3; i++ ){
+
+            if (row+i < gameBoard.length){
+                if (gameBoard[row+i][col] == player)
+                    counter++
+                else
+                    i = 4
+            }
+        }
+
+        if (counter >= 4)
+            return true;
+
+        counter = 1;
+
+        // check colonne
+        for (let i = 1; i <= 3; i++ ){
+
+            if (col-i >= 0){
+                if(gameBoard[row][col-i] == player)
+                    counter++;
+                else
+                    i = 4
+            }
+
+        }
+        for (let i = 1; i <= 3; i++ ){
+
+            if (col+i < gameBoard[0].length){
+                if (gameBoard[row][col+i] == player)
+                    counter++
+                else
+                    i = 4
+            }
+        }
+        if (counter >= 4)
+            return true;
+
+        counter = 1;
+
+        // check diag asc.
+        for (let i = 1; i <= 3; i++ ){
+
+            if (row-i >= 0 && col+i < gameBoard[0].length){
+                if(gameBoard[row-i][col+i] == player)
+                    counter++;
+                else
+                    i = 4
+            }
+        }
+        for (let i = 1; i <= 3; i++ ){
+
+            if (col-i >= 0 && row+i < gameBoard.length){
+                if (gameBoard[row+i][col-i] == player)
+                    counter++
+                else
+                    i = 4
+            }
+        }
+        if (counter >= 4)
+            return true;
+
+        counter = 1;
+        // check diag desc
+        for (let i = 1; i <= 3; i++ ){
+
+            if (row+i < gameBoard.length && col+i < gameBoard[0].length ){
+                if (gameBoard[row+i][col+i] == player)
+                    counter++
+                else
+                    i = 4
+            }
+        }
+
+        for (let i = 1; i <= 3; i++ ){
+
+            if (row-i >= 0 && col-i >= 0 ){
+                if (gameBoard[row-i][col-i] == player)
+                    counter++
+                else
+                    i = 4
+            }
+        }
+        if (counter >= 4)
+            return true;
         return false;
     }
 
