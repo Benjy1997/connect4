@@ -1,7 +1,7 @@
 var GAME_GRID = document.getElementById("tableId"); // Grille de jeu.
 var isGameOver = false; //Détermine si le jeu est fini.
-var computer = new AI(3);
-var AIPlay = false;
+var computer = new AI(1);
+var didGameStart = false;
 
 /**
  * Attends le chargement du DOM.
@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	// Clic sur le bouton "redémarrer une partie !".
 	document.getElementById("RAZ").onclick = function () { reset(); };
+
+	let select = document.getElementById('selectDifficulty');
+	select.onchange = function () {
+
+
+			computer = new AI(parseInt(select.value));
+
+
+
+
+	}
 
 
 	if (GAME_GRID != null) {
@@ -35,6 +46,9 @@ function play(cel) {
 	if (isGameOver)
 		return;
 
+
+	document.getElementById('selectDifficulty').setAttribute('disabled', 'disabled');
+
 	// Récupère la classe de l'élément td.
 	var col = cel.getAttribute("class");
 
@@ -44,6 +58,12 @@ function play(cel) {
 	// 3) Corrige le numéro pour qu'il corresponde à un index qui commence de 0.
 	col = parseInt(col.substr(3,(col.length-2)))-1;
 
+	// Check si la colonne est remplie.
+	if (GAME_GRID.rows[0].cells[col].firstElementChild.getAttribute('class') != null){
+		console.log("La colonne est remplie")
+		return;
+	}
+
 	display(col);
 	// Détermine s'il y a un gagnant.
 	let winner = checkWin();
@@ -51,6 +71,7 @@ function play(cel) {
 		isGameOver = true;
 		winner = winner.charAt(0).toUpperCase() + winner.slice(1);
 		alert("Le joueur " + winner + " a gagné !");
+		return;
 	}
 	col = computer.play(2);
 	display(col);
@@ -87,9 +108,6 @@ function display(col) {
 				cel.setAttribute("style", "color:Gold");
 				currentPlayer.innerHTML = "Rouge doit jouer !";
 			}
-
-
-
 			return;
 		}
 	}
@@ -187,6 +205,8 @@ function reset(){
 	}
 
 	isGameOver = false;
+
+	document.getElementById('selectDifficulty').removeAttribute('disabled');
 	return;
 }
 
