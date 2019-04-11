@@ -16,11 +16,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	let select = document.getElementById('selectDifficulty');
 	select.onchange = function () {
 
-
 			computer = new AI(parseInt(select.value));
-
-
-
 
 	}
 

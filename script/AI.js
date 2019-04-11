@@ -1,10 +1,21 @@
-// Initializing a class definition
+/**
+ * Représente l'IA du jeu basé sur l'algorithme MinMax.
+ */
 class AI {
 
+    /**
+     * Constructeur de la classe
+     * @param depth Représente le nombre de coup en avance que jouera l'IA.
+     */
     constructor(depth) {
         this.depth = depth;
     }
 
+    /**
+     * Fait jouer l'IA
+     * @param {int} player La couleur du jeton que l'IA doit jouer. 1 = rouge 2 = jaune.
+     * @returns {int} La colonne que l'IA jouera.
+     */
     play(player){
         let colPlayed;
         let gameBoard = this.boardToArray();
@@ -79,7 +90,7 @@ class AI {
      * 1 --> joueur rouge,
      * 2 --> joueur jaune,
      * 0 --> aucun joueur.
-     * @returns {gameBoard[]} Le tableau js de la grille de jeu html.
+     * @returns {Array} Le tableau js de la grille de jeu html.
      */
     boardToArray(){
 
@@ -115,7 +126,7 @@ class AI {
     /**
      * Change le joueur courant.
      * @param currentPlayer
-     * @returns {number}
+     * @returns {int}
      */
     changePlayer(currentPlayer){
         if (currentPlayer === 1)
@@ -234,18 +245,19 @@ class AI {
             //Parcours les colonnes.
             for(let j = 0; j < gameBoard[0].length; j++){
                 if (gameBoard[i][j] === refPlayer){
-                    result += this.scoreAlignment(this.nbTokensVerticallyAligned(gameBoard,i,j,refPlayer));
-                    result += this.scoreAlignment(this.nbTokenshorizontallyAligned(gameBoard,i,j,refPlayer));
-                    result += this.scoreAlignment(this.nbTokensDiagonallyASC(gameBoard,i,j,refPlayer));
-                    result += this.scoreAlignment(this.nbTokensDiagonallyDESC(gameBoard,i,j,refPlayer));
+                    result += this.scoreAlignment(this.nbTokensVerticallyAligned(gameBoard,i,j));
+                    result += this.scoreAlignment(this.nbTokenshorizontallyAligned(gameBoard,i,j));
+                    result += this.scoreAlignment(this.nbTokensDiagonallyASC(gameBoard,i,j));
+                    result += this.scoreAlignment(this.nbTokensDiagonallyDESC(gameBoard,i,j));
                 }
             }
         }
         return result;
     }
 
-    nbTokensVerticallyAligned(gameBoard, row, col, refPlayer){
+    nbTokensVerticallyAligned(gameBoard, row, col){
         let counter = 1;
+        let refPlayer = gameBoard[row][col];
         if(row+1 < gameBoard.length){
             if (gameBoard[row+1][col] === refPlayer)
                 counter++;
@@ -260,6 +272,7 @@ class AI {
             else
                 return counter;
         }
+
         if(row+3 < gameBoard.length){
             if (gameBoard[row+3][col] === refPlayer)
                 counter++;
@@ -268,8 +281,10 @@ class AI {
         }
         return counter;
     }
-    nbTokenshorizontallyAligned(gameBoard, row, col, refPlayer){
+
+    nbTokenshorizontallyAligned(gameBoard, row, col){
         let counter = 1;
+        let refPlayer = gameBoard[row][col];
         if(col+1 < gameBoard[0].length){
             if (gameBoard[row][col+1] === refPlayer)
                 counter++;
@@ -291,8 +306,10 @@ class AI {
         }
         return counter;
     }
-    nbTokensDiagonallyASC(gameBoard, row, col, refPlayer){
+
+    nbTokensDiagonallyASC(gameBoard, row, col){
         let counter = 1;
+        let refPlayer = gameBoard[row][col];
         if(row+1 < gameBoard.length && col-1 >= 0){
             if(gameBoard[row+1][col-1] === refPlayer)
                 counter++;
@@ -314,8 +331,10 @@ class AI {
         }
         return counter;
     }
-    nbTokensDiagonallyDESC(gameBoard, row, col, refPlayer){
+
+    nbTokensDiagonallyDESC(gameBoard, row, col){
         let counter = 1;
+        let refPlayer = gameBoard[row][col];
         if(row+1 < gameBoard.length && col+1 < gameBoard[0].length){
             if (gameBoard[row+1][col+1] === refPlayer)
             counter++;
